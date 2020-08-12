@@ -1,0 +1,127 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+env:
+  IS_NODE_ENABLED: ${{ true }}
+  IS_DOTNET_ENABLED: ${{ true }}
+  IS_TESTS_DOTNET_ENABLED: ${{ true }}
+  LAUNCH_HTTPS: ${{ false }}
+  ENV_TYPE: ${{ 'azure' }}
+
+ 
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: 
+      - master
+      - Themed-A
+      - Themed-B
+      - Themed-Xtreme
+      - Themed-Architect 
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains multiple jobs
+  #--------------------------------------------------------------------------------------
+  
+  DotNet_Job:
+    name: DotNet Job
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2.1.0
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v1.4.0
+        with:
+          dotnet-version: 3.1.101
+      
+      # ----------------------------------------------
+      - name: Install dependencies
+        working-directory: dotnet
+        continue-on-error: false
+        if: ${{ env.IS_DOTNET_ENABLED }}
+        run: dotnet restore Sabio.Starter.Core.sln
+      
+      # ----------------------------------------------
+      - name: Build
+        working-directory: dotnet
+        continue-on-error: false
+        if: ${{ env.IS_DOTNET_ENABLED }}
+        run: dotnet msbuild -warnAsError /property:Configuration=Release /p:RestorePackages=false Sabio.Starter.Core.sln
+        
+  #--------------------------------------------------------------------------------------
+  Node_Job:
+    name: Node Build
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v1.4.2
+      with:
+        node-version: '12.x'
+      if: ${{ env.IS_NODE_ENABLED }}
+      
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Checkout Code
+      uses: actions/checkout@v2.1.0
+      continue-on-error: false
+      if: ${{ env.IS_NODE_ENABLED }}
+      
+    # Run the npm install command
+    - name: Node Installation
+      working-directory: node
+      continue-on-error: false
+      if: ${{ env.IS_NODE_ENABLED }}
+      run: |
+        npm install
+      
+    # Lint the application
+    - name: Linting Application
+      working-directory: node
+      continue-on-error: false
+      if: ${{ env.IS_NODE_ENABLED }}
+      run: |
+        npm run lint    
+
+    # Traspile
+    - name: Compile Application
+      working-directory: node
+      continue-on-error: false
+      if: ${{ env.IS_NODE_ENABLED }}
+      run: |
+        npm run babel-app-q   
+
+    # Spin up the application
+    - name: Launching & Killing
+      working-directory: node
+      continue-on-error: false
+      if: ${{ env.IS_NODE_ENABLED }}
+      run: |
+        npm run spinup-die   
+
+  #--------------------------------------------------------------------------------------
+  React_Job:
+    name: React Build
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v1.4.2
+      with:
+        node-version: '12.x'
+      
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Checkout Code
+      uses: actions/checkout@v2.1.0
+      continue-on-error: false
+
+    - name: Yarn Install and Build
+      working-directory: react
+      run: |
+        yarn install
+        yarn build
