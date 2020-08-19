@@ -1,4 +1,4 @@
-# This is a starter repo for a .Net/React web application
+# This is a starter repo for a .Net/React web application.
 
 # Developer Requirements
 
