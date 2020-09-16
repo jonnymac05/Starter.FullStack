@@ -19,7 +19,7 @@ Once the developer requirments have been satisfied you can run this script to do
 - *will not run site*
 
 ## Node
-- will `npm instal`
+- will `npm install`
 - will babel and other scripts to make sure site can run
 
 ## dotnet
@@ -47,7 +47,6 @@ This script will `build-all.ps1` and `run-dev-sites.ps1`
 
 
 Testing permissions on github
-
 
 
 
