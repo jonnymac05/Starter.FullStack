@@ -55,7 +55,7 @@
     "reflect-metadata": "^0.1.13",
     "require-all": "^3.0.0",
     "sabio-debug": "git+https://github.com/sabiocode/debug.git",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.4.0"
   },
   "husky": {
     "hooks": {
